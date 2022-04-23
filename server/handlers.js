@@ -10,7 +10,6 @@ const getProducts = (req, res) => {
   // db.query('SELECT * FROM products;', [])
   db.query('SELECT id, name, slogan, description, category, default_price::numeric FROM products LIMIT $1 OFFSET $2;', [count, (page - 1) * count])
   .then((response) => {
-    // console.log(response.rows);
     const queryDuration = Date.now() - start;
 
     console.log(`getProducts queryDuration = ${queryDuration} ms`);
@@ -25,6 +24,7 @@ const getProducts = (req, res) => {
   })
   .catch((error) => {
     console.log(error);
+    res.status(500).json(error);
   });
 };
 
@@ -49,7 +49,6 @@ const getProduct = (req, res) => {
     return db.query('SELECT feature, value FROM features WHERE product_id = $1;', [productId]);
   })
   .then((response) => {
-    // console.log(response.rows);
     const queryDuration = Date.now() - start;
 
     result.features = response.rows;
@@ -62,6 +61,7 @@ const getProduct = (req, res) => {
   })
   .catch((error) => {
     console.log(error);
+    res.status(500).json(error);
   });
 };
 
@@ -79,7 +79,6 @@ const getRelated = (req, res) => {
 
   db.query(query)
   .then((response) => {
-    // console.log(response.rows);
     const queryDuration = Date.now() - start;
 
     console.log(`getRelated productId=${productId}, queryDuration = ${queryDuration} ms'`);
@@ -87,6 +86,7 @@ const getRelated = (req, res) => {
   })
   .catch((error) => {
     console.log(error);
+    res.status(500).json(error);
   });
 
 };
@@ -167,6 +167,7 @@ const getProductStyles = (req, res) => {
   })
   .catch((error) => {
     console.log(error);
+    res.status(500).json(error);
   });
 }
 
