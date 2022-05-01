@@ -8,7 +8,7 @@ const getProducts = (req, res) => {
   const start = Date.now();
 
   // db.query('SELECT * FROM products;', [])
-  db.query('SELECT id, name, slogan, description, category, default_price::numeric FROM products LIMIT $1 OFFSET $2;', [count, (page - 1) * count])
+  db.query('SELECT id, name, slogan, description, category, default_price::numeric FROM products WHERE id > $1 LIMIT $2;', [(page - 1) * count, count])
   .then((response) => {
     const queryDuration = Date.now() - start;
 
