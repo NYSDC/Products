@@ -1,0 +1,21 @@
+config:
+  target: "http://localhost:3000"
+  phases:
+    - duration: 30
+      arrivalRate: 10
+      name: Sustain 10
+    - duration: 30
+      arrivalRate: 100
+      name: Sustain 100
+  processor: "./processor.js" # imports a js function
+
+scenarios:
+  - name: "get products"
+    flow:
+      - get:
+          url: "/products"
+  - name: "get products/:product-id"
+    flow:
+      - get:
+          url: "/products/{{ productId }}"
+          beforeRequest: "randomProductId"

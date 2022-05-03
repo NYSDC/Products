@@ -1,4 +1,4 @@
-require('newrelic'); //comment out if you don't need new relic tracking
+// require('newrelic'); //comment out if you don't need new relic tracking
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
@@ -10,6 +10,8 @@ const app = express();
 app.use(bp.json());
 app.use(bp.urlencoded({ extended: true }));
 app.use(cors());
+
+app.use(express.static('public'));
 
 app.get('/products', getProducts);
 app.get('/products/:product_id', getProduct);

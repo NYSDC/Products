@@ -12,7 +12,7 @@ const getProducts = (req, res) => {
   .then((response) => {
     const queryDuration = Date.now() - start;
 
-    console.log(`getProducts queryDuration = ${queryDuration} ms`);
+    console.log(`getProducts page=${page} count=${count} queryDuration = ${queryDuration} ms`);
 
     response.rows.forEach((row) => {
       row.default_price = parseInt(row.default_price);
@@ -195,7 +195,6 @@ const getCart = (req, res) => {
 }
 
 const postCart = (req, res) => {
-  console.log(req.body);
   const userSession = req.body.user_token;
   const productId = req.body.sku_id;
 
@@ -203,7 +202,7 @@ const postCart = (req, res) => {
   db.query('INSERT INTO cart (user_session, product_id, active) VALUES ($1, $2, $3);', [userSession, productId, true])
   .then((response) => {
     const queryDuration = Date.now() - start;
-    console.log(`postCart user session = ${userSession} queryDuration = ${queryDuration} ms`);
+    console.log(`postCart user session = ${userSession}, product id = ${productId}, queryDuration = ${queryDuration} ms`);
 
     if (response.rowCount === 1) {
       res.sendStatus(201);
