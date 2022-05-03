@@ -7,17 +7,19 @@
   "author": "Ricky Polim <ricpolim@gmail.com>",
   "license": "UNLICENSED",
   "dependencies": {
-    "pg": "^8.7.3",
+    "aws-sdk": "^2.1119.0",
+    "body-parser": "^1.20.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
     "express": "^4.17.3",
+    "newrelic": "latest",
     "node-mocks-http": "^1.11.0",
     "nodemon": "^2.0.15",
-    "body-parser": "^1.20.0",
-    "aws-sdk": "^2.1119.0",
-    "dotenv": "^16.0.0"
+    "pg": "^8.7.3"
   },
   "devDependencies": {
-    "eslint":"^8.13.0",
-    "jest":"^27.5.1"
+    "eslint": "^8.13.0",
+    "jest": "^27.5.1"
   },
   "peerDependencies": {
     "eslint-config-airbnb-base": "^15.0.0"

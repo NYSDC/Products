@@ -1,0 +1,36 @@
+version: '3'
+services:
+  db:
+    image: postgres:14.2
+    restart: always
+    environment:
+      - POSTGRES_USER=ricpolim
+      - POSTGRES_PASSWORD=password
+    ports:
+      - 5432:5432
+    volumes:
+      - db:/var/lib/postgresql/data
+  api:
+    container_name: products-api
+    build:
+      context: ./
+    image: products
+    depends_on:
+      - db
+    ports:
+      - 3000:3000
+    environment:
+      NODE_ENV: production
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: ricpolim
+      DB_PASSWORD: password
+      DB_NAME: sdc_products
+    links:
+      - db
+    working_dir: /app
+    volumes:
+       - ./:/app
+volumes:
+  db:
+    driver: local

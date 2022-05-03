@@ -102,3 +102,9 @@ dist
 
 # TernJS port file
 .tern-port
+
+#new relic files
+server/newrelic*.js
+
+#artillery reports
+artillery/*.txt

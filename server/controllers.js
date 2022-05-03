@@ -8,11 +8,11 @@ const getProducts = (req, res) => {
   const start = Date.now();
 
   // db.query('SELECT * FROM products;', [])
-  db.query('SELECT id, name, slogan, description, category, default_price::numeric FROM products LIMIT $1 OFFSET $2;', [count, (page - 1) * count])
+  db.query('SELECT id, name, slogan, description, category, default_price::numeric FROM products WHERE id > $1 LIMIT $2;', [(page - 1) * count, count])
   .then((response) => {
     const queryDuration = Date.now() - start;
 
-    console.log(`getProducts queryDuration = ${queryDuration} ms`);
+    console.log(`getProducts page=${page} count=${count} queryDuration = ${queryDuration} ms`);
 
     response.rows.forEach((row) => {
       row.default_price = parseInt(row.default_price);
@@ -171,9 +171,56 @@ const getProductStyles = (req, res) => {
   });
 }
 
+const getCart = (req, res) => {
+  const userSession = req.params.user_session;
+
+  const start = Date.now();
+
+  db.query('SELECT product_id AS sku_id, count(product_id) AS count FROM cart WHERE user_session = $1 GROUP BY product_id;', [userSession])
+  .then((response) => {
+    const queryDuration = Date.now() - start;
+
+    console.log(`getCart user session = ${userSession} queryDuration = ${queryDuration} ms`);
+
+    response.rows.forEach((row) => {
+      row.count = parseInt(row.count);
+    });
+
+    res.json(response.rows);
+  })
+  .catch((error) => {
+    console.log(error);
+    res.status(500).json(error);
+  });
+}
+
+const postCart = (req, res) => {
+  const userSession = req.body.user_token;
+  const productId = req.body.sku_id;
+
+  const start = Date.now();
+  db.query('INSERT INTO cart (user_session, product_id, active) VALUES ($1, $2, $3);', [userSession, productId, true])
+  .then((response) => {
+    const queryDuration = Date.now() - start;
+    console.log(`postCart user session = ${userSession}, product id = ${productId}, queryDuration = ${queryDuration} ms`);
+
+    if (response.rowCount === 1) {
+      res.sendStatus(201);
+    } else {
+      throw 'Insert query error at postCart';
+    }
+  })
+  .catch((error) => {
+    console.log(error);
+    res.status(500).json(error);
+  });
+}
+
 module.exports = {
   getProducts,
   getProduct,
   getRelated,
   getProductStyles,
+  getCart,
+  postCart,
 };

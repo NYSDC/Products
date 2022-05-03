@@ -1,0 +1,49 @@
+config:
+  target: "http://localhost:3000"
+  phases:
+    - duration: 60
+      arrivalRate: 1
+      name: Warm up with 1 RPS for 60s
+    - duration: 30
+      arrivalRate: 1
+      rampTo: 10
+      name: Ramp up 1 to 10 RPS for 30s
+    - duration: 60
+      arrivalRate: 10
+      name: Sustain 10 RPS for 60s
+    - duration: 30
+      arrivalRate: 10
+      rampTo: 100
+      name: Ramp up 10 to 100  RPS for 30s
+    - duration: 60
+      arrivalRate: 100
+      name: Sustain 100 RPS for 60s
+    - duration: 30
+      arrivalRate: 100
+      rampTo: 300
+      name: Ramp up 100 to 300  RPS for 30s
+    - duration: 60
+      arrivalRate: 300
+      name: Sustain 300 RPS for 60s
+    - duration: 30
+      arrivalRate: 300
+      rampTo: 500
+      name: Ramp up 300 to 500  RPS for 30s
+    - duration: 60
+      arrivalRate: 500
+      name: Sustain 500 RPS for 60s
+    - duration: 60
+      arrivalRate: 500
+      rampTo: 1000
+      name: Ramp up 500 to 1000  RPS for 60s
+    - duration: 60
+      arrivalRate: 1000
+      name: Sustain 1000 RPS for 60s
+  processor: "./processor.js" # imports a js function
+
+scenarios:
+  - name: "get product styles"
+    flow:
+      - get:
+          url: "/products/{{ productId }}/styles"
+          beforeRequest: "randomProductId"
