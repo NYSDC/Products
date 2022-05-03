@@ -7,19 +7,18 @@ services:
       - POSTGRES_USER=ricpolim
       - POSTGRES_PASSWORD=password
     ports:
-      - 5432
+      - 5432:5432
     volumes:
       - db:/var/lib/postgresql/data
-    networks:
-      - api.network
   api:
+    container_name: products-api
     build:
       context: ./
     image: products
     depends_on:
       - db
     ports:
-      - 3000
+      - 3000:3000
     environment:
       NODE_ENV: production
       DB_HOST: db
@@ -27,29 +26,12 @@ services:
       DB_USER: ricpolim
       DB_PASSWORD: password
       DB_NAME: sdc_products
-    restart: always
     links:
       - db
     working_dir: /app
     volumes:
-      - ./:/app
-    networks:
-      - api.network
-    deploy:
-      mode: replicated
-      replicas: 3
-  nginx:
-    image: nginx:latest
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-    depends_on:
-      - api
-    ports:
-      - 80:80
-    networks:
-      - api.network
+       - ./:/app
+    restart: always
 volumes:
   db:
     driver: local
-networks:
-    api.network:
