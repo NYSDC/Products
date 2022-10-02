@@ -31,33 +31,15 @@ const getProducts = (req, res) => {
 const getProduct = (req, res) => {
   const productId = req.params.product_id;
 
-  let result = {};
-  let responseSent = false;
   const start = Date.now();
 
-  db.query('SELECT id, name, slogan, description, category, default_price::numeric FROM products WHERE id = $1;', [productId])
-  .then((response) => {
-
-    if (response.rows.length === 0) {
-      res.json({});
-      responseSent = true;
-      return response;
-    }
-
-    result = response.rows[0];
-
-    return db.query('SELECT feature, value FROM features WHERE product_id = $1;', [productId]);
-  })
+  db.query('SELECT id, name, slogan, description, category, default_price::numeric, (SELECT jsonb_agg(nested_features) FROM (SELECT feature, value FROM features WHERE product_id = $1) AS nested_features) AS features FROM products WHERE id = $1;', [productId])
   .then((response) => {
     const queryDuration = Date.now() - start;
-
-    result.features = response.rows;
-
     console.log(`getProduct id=${productId}, queryDuration = ${queryDuration} ms'`);
 
-    if (!responseSent) {
-      res.json(result);
-    }
+    const result = response.rows.length > 0 ? response.rows[0] : {};
+    res.json(result);
   })
   .catch((error) => {
     console.log(error);
